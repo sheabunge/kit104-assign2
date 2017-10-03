@@ -1,13 +1,12 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
-# do we need to copy dotfiles?
-# do we need to display an error if copy failed?
-# do we copy directories (recusrively) or just files?
-# do we follow or copy symlinks?
-# do we need to preserve file permissions/ownership
+## Written by Shea Bunge (student 407095) in Sept/Oct 2017
+## 
+## This script copies all the files from two directories into a newly-created destination directory
+## If there are duplicate files between the two source directories, the newest files will be kept
+## The destination directory will be created by the script, and should not already exist
 
-
-# ensure that the directories exist
+# ensure that the directories exist. if not, display an error and exit
 if [ ! -d $1 ] || [ ! -d $2 ]
 	then
 	echo -e "the directories $1 and $2 must already exist"
@@ -43,7 +42,9 @@ do
 	fi
 done
 
-# create the destination directory and copy the files
+# create the destination directory
 mkdir "$3"
+
+# copy all files from the first directory to the empty destination
 cp -r "$1/." "$3"
 cp -r "$2/." "$3"
