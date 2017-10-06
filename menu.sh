@@ -13,12 +13,12 @@ if [ ! -f records ]
 fi
 
 # prints the records file to the screen
-function view_records {
+view_records() {
 	cat records
 }
 
 # allows the user to search the records file with a specified keyword
-function search_records {
+search_records() {
 	echo -e "Enter keyword: \c"
 	read keyword
 
@@ -34,7 +34,7 @@ function search_records {
 	fi
 }
 
-function add_records {
+add_records() {
 	echo 'Add New Employee Record'
 
 	# prompt the user to enter a phone number
@@ -89,7 +89,7 @@ function add_records {
 
 }
 
-function delete_records {
+delete_records() {
 	echo 'Delete Employee Record'
 
 	# read in the phone number of the record to delete
