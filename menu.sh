@@ -55,6 +55,35 @@ search_records() {
 	confirm_continue
 }
 
+# helper function to read in a name from the user and validate it
+# the first argument is the text to use for the prompt
+# the second argument is the name of the field for use in error messages
+# after running the function, the validated name will be stored in the $name variable
+read_name() {
+
+	# save the function arguments into variables
+	prompt="$1"
+	field="$2"
+
+	# continually prompt for the name until it is entered
+	while echo -e "$prompt: \c"
+	do
+		read name
+		case "$name" in
+			# display a message if the name contains invalid characters
+			*[!\ A-Za-z]*) echo "$field can contain only alphabetic characters and spaces" ;;
+
+			# display a message if the input is empty
+			'') echo "$field not entered" ;;
+
+			# otherwise, the name must be valid, so exit the loop
+			*) break ;;
+		esac
+	done
+	echo
+}
+
+
 # allows the user to add a new employee record to the records file
 add_records() {
 	# continually prompt the user to add a record until they decide to stop
@@ -62,121 +91,79 @@ add_records() {
 	do
 		echo 'Add New Employee Record'
 
-		# prompt the user to enter a phone number
+		# continually prompt the user to enter a phone number until a valid one is entered
 		while echo -e "Phone Number (xxxxxxxx): \c"
 		do
 			read phone
 			case "$phone" in
 
 				# display a message if the phone number is empty
-				'')
-					echo 'Phone number not entered'
-					continue ;;
+				'') echo 'Phone number not entered' ;;
 
 				# check if the phone number is valid (eight digits not beginning with a zero)
 				[1-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
+					# if valid, use grep to determine whether it already exists in the records file
 					if grep "$phone" records >/dev/null;
 						then
+						# if it does exist, then display a message and allow the loop to continue
 						echo "Phone number exists"
-						continue
 					else
+						# if it is valid and does not already exist, then break out of the loop
 						break
 					fi
 					;;
 
 				# if the phone number does not match the above pattern, then it is invalid
-				*)
-					echo 'Invalid phone number'
-					continue ;;
+				# diplay a message and allow the loop to continue
+				*) echo 'Invalid phone number' ;;
 			esac
 		done
 
 		echo
 
-		# prompt the user to enter their family name
-		while echo -e "Family Name: \c"
-		do
-			read surname
-			case "$surname" in
-				# display a message if the input contains invalid characters
-				[!\ A-Za-z]*) echo "Family name can contain only alphabetic characters and spaces" ;;
+		# prompt the user to enter the employee's family name
+		read_name "Family Name" "Family name"
+		surname="$name"
 
-				# display a message if the family name is empty
-				'') echo 'Family name not entered' ;;
+		# prompt the user to enter the employee's first name
+		read_name "Given Name" "Given name"
+		firstname="$name"
 
-				# otherwise, the family name must be valid, so exit the loop
-				*) break ;;
-			esac
-		done
-
-		echo
-
-		# prompt the user to enter their family name
-		while echo -e "Given Name: \c"
-		do
-			read firstname
-			case "$firstname" in
-				# display a message if the input contains invalid characters
-				[!\ A-Za-z]*) echo "Given name can contain only alphabetic characters and spaces" ;;
-
-				# display a message if the family name is empty
-				'') echo 'Given name not entered' ;;
-
-				# otherwise, the given name must be valid, so exit the loop
-				*) break ;;
-			esac
-		done
-
-		echo
-
-		# prompt the user to enter their department number
+		# continually prompt the user to enter a departmetn number until a valid one is entered
 		while echo -e "Department Number: \c"
 		do
 			read depnum
 			case "$depnum" in
-				# display a message if the input contains invalid characters
-				![0-9][0-9]) echo 'A valid department number contains 2 digits' ;;
+				# exit the loop if the department number is valid (exactly two digits)
+				[0-9][0-9]) break ;;
 
 				# display a message if the input is empty
-				'') echo 'Department name not entered' ;;
+				'') echo 'Department number not entered' ;;
 
-				# otherwise, the department number must be valid, so exit the loop
-				*) break ;;
+				# otherwise, the department number must be invalid, so display a message
+				*) echo 'A valid department number contains 2 digits' ;;
 			esac
 		done
 
 		echo
 
-		# prompt the user to enter their job title
-		while echo -e "Job Title: \c"
-		do
-			read title
-			case "$title" in
-				# display a message if the input contains invalid characters
-				[!\ A-Za-z]*) echo "Job title can contain only alphabetic characters and spaces" ;;
-
-				# display a message if the family name is empty
-				'') echo 'Job title not entered' ;;
-
-				# otherwise, the job title must be valid, so exit the loop
-				*) break ;;
-			esac
-		done
+		# prompt the user to enter the employee's job title
+		read_name "Job Title" "Job title"
+		title="$name"
 
 		# add the new information to the records file
-		echo
 		echo 'Adding new employee record to the records file ...'
-		echo "$phone:$surname:$firstname:$depnum:$title" >> records
-		echo 'New record saved'
+		echo "$phone:$surname:$firstname:$depnum:$title" >> records && echo 'New record saved'
+		echo
 
 		# ask the user whether to continue the loop or exit
-		echo -e "Add another? (y)es or (n)o: n \c"
+		echo -e "Add another? (y)es or (n)o: \c"
 		read YN
 		case "$YN" in
 			# if the user entered 'n', break out of the loop and return to the menu
-			n|n) echo; break ;;
-			# if the user entered 'y', do nothing (i.e. allow the loop to continue)
-			n|N) echo ;;
+			n|N) echo; break ;;
+			# if the user entered 'y', allow the loop to continue
+			y|Y) echo ;;
 			# if the user entered something else, display a message and then return to the menu
 			*) echo 'Invalid response - returning to menu'; break; ;;
 		esac
@@ -187,10 +174,48 @@ delete_records() {
 	echo 'Delete Employee Record'
 
 	# read in the phone number of the record to delete
-	echo -e "Enter a phone number: \c"
-	read $phone
+	while echo -e "Enter a phone number: \c"
+	do
+		read phone
+		case "$phone" in
 
+			# display a message if the phone number is empty
+			'') echo 'Phone number not entered' ;;
 
+			# check if the phone number is valid (eight digits not beginning with a zero)
+			[1-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
+				if grep "$phone" records >/dev/null;
+					then
+					break
+				else
+					echo "Phone number not found"
+				fi
+				;;
+
+			# if the phone number does not match the above pattern, then it is invalid
+			*) echo 'Invalid phone number' ;;
+		esac
+	done
+
+	grep "$phone" records
+
+	# ask the user whether to continue the loop or exit
+	echo -e "\nConfirm deletion: (y)es or (n)o: \c"
+	read YN
+	case "$YN" in
+		# if the user entered 'n', do nothing and allow the function to return to the main menu
+		n|N) break ;;
+		# if the user entered 'y', perform the deletion
+		y|Y)
+			# use grep to remove the record to be deleted and save output to a temporary file
+			# it is not possible to write the output directly back into records due to how bash handles redirections
+			grep -v "$phone" records > records.tmp
+			cat records.tmp > records # write the temporary file contents back into the records file.
+			rm -f records.tmp         # remove the temporary file
+			;;
+		# if the user entered something else, display a message and then return to the menu
+		*) echo 'Invalid response - returning to menu' ;;
+	esac
 }
 
 # continue to display the menu until the program is exited
