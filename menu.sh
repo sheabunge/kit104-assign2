@@ -1,8 +1,12 @@
-#! /bin/sh
+#!/bin/sh
 
-## Written by Shea Bunge (student 407095) in Sept-Oct 2017
+## Written by Shea Bunge (student 407095) in Sept/Oct 2017
 ##
-
+## This script assists with managing an employee records file
+## It provides the functionality to view the records in full,
+## search the records for a specified keyword, add new entries
+## to the records, and delete entries from the records, all
+## accessable from a menu interface
 
 
 # ensure that the records file exists before proceeding
