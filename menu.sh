@@ -17,10 +17,16 @@ if [ ! -f records ]
 	exit 1
 fi
 
+# helper function to wait for the user to press enter
+confirm_continue() {
+	echo
+	read -p 'Press Enter to continue...'
+}
+
 # prints the records file to the screen
 view_records() {
-	cat records
-	echo
+	cat records      # print the contents of the file
+	confirm_continue # display a message before continuing
 }
 
 # allows the user to search the records file with a specified keyword
@@ -44,6 +50,9 @@ search_records() {
 			echo "$keyword not found"
 		fi
 	fi
+
+	# display a message before continuing
+	confirm_continue
 }
 
 # allows the user to add a new employee record to the records file
@@ -209,11 +218,7 @@ Q - Quit
 		3) add_records ;;
 		4) delete_records ;;
 		Q|q) exit 0 ;;
-		*) echo 'Invalid selection'
+		*) echo 'Invalid selection'; confirm_continue ;;
 	esac
-
-	# display a message after each function has finished
-	echo
-	read -p 'Press Enter to continue...'
 
 done
