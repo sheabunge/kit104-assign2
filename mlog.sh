@@ -29,10 +29,10 @@ do
 	# loop through every user on the deny list
 	for user in $deny
 	do
-		# run the who command to retrieve a list of all logged-in users and then
-		# filter it to only display entries for the specified user names
+		# run the users command to retrieve a list of all logged-in users and then
+		# filter it to only display entries for the specified user name
 		# if the result is more than one line, then the user has multiple logins
-		if [ `who | grep $user | wc -l` -gt 1 ]
+		if [ `users | grep -o $user | wc -l` -gt 1 ]
 			then
 			# determine the user's full name using grep to find the relevant line in
 			# /etc/passwd, and then using cut to retrieve the fifth column
