@@ -161,9 +161,9 @@ add_records() {
 		read YN
 		case "$YN" in
 			# if the user entered 'n', break out of the loop and return to the menu
-			n|N) echo; break ;;
+			[Nn]*) echo; break ;;
 			# if the user entered 'y', allow the loop to continue
-			y|Y) echo ;;
+			[Yy]*) echo ;;
 			# if the user entered something else, display a message and then return to the menu
 			*) echo 'Invalid response - returning to menu'; break; ;;
 		esac
@@ -204,9 +204,9 @@ delete_records() {
 	read YN
 	case "$YN" in
 		# if the user entered 'n', do nothing and allow the function to return to the main menu
-		n|N) break ;;
+		[Nn]*) break ;;
 		# if the user entered 'y', perform the deletion
-		y|Y)
+		[Yy]*)
 			# use grep to remove the record to be deleted and save output to a temporary file
 			# it is not possible to write the output directly back into records due to how bash handles redirections
 			grep -v "$phone" records > records.tmp
