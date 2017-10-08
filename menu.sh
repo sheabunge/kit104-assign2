@@ -212,6 +212,7 @@ delete_records() {
 			grep -v "$phone" records > records.tmp
 			cat records.tmp > records # write the temporary file contents back into the records file.
 			rm -f records.tmp         # remove the temporary file
+			echo 'Record deleted.'    # display success message
 			;;
 		# if the user entered something else, display a message and then return to the menu
 		*) echo 'Invalid response – returning to menu' ;;
