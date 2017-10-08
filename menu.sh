@@ -39,7 +39,7 @@ search_records() {
 	# display a message if the keyword is empty
 	if [ ! "$keyword" ]
 		then
-		echo "Keyword not entered"
+		echo 'Keyword not entered'
 	else
 		# search the records file for the specified keyword
 		grep "$keyword" records
@@ -106,7 +106,7 @@ add_records() {
 					if grep "$phone" records >/dev/null;
 						then
 						# if it does exist, then display a message and allow the loop to continue
-						echo "Phone number exists"
+						echo 'Phone number exists'
 					else
 						# if it is valid and does not already exist, then break out of the loop
 						break
@@ -122,11 +122,11 @@ add_records() {
 		echo
 
 		# prompt the user to enter the employee's family name
-		read_name "Family Name" "Family name"
+		read_name 'Family Name' 'Family name'
 		surname="$name"
 
 		# prompt the user to enter the employee's first name
-		read_name "Given Name" "Given name"
+		read_name 'Given Name' 'Given name'
 		firstname="$name"
 
 		# continually prompt the user to enter a departmetn number until a valid one is entered
@@ -148,7 +148,7 @@ add_records() {
 		echo
 
 		# prompt the user to enter the employee's job title
-		read_name "Job Title" "Job title"
+		read_name 'Job Title' 'Job title'
 		title="$name"
 
 		# add the new information to the records file
@@ -188,7 +188,7 @@ delete_records() {
 					then
 					break
 				else
-					echo "Phone number not found"
+					echo 'Phone number not found'
 				fi
 				;;
 
@@ -214,7 +214,7 @@ delete_records() {
 			rm -f records.tmp         # remove the temporary file
 			;;
 		# if the user entered something else, display a message and then return to the menu
-		*) echo 'Invalid response - returning to menu' ;;
+		*) echo 'Invalid response – returning to menu' ;;
 	esac
 }
 
@@ -245,5 +245,4 @@ Q - Quit
 		Q|q) exit 0 ;;
 		*) echo 'Invalid selection'; confirm_continue ;;
 	esac
-
 done
