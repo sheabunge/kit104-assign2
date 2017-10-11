@@ -13,10 +13,16 @@ if [ ! -d $1 ] || [ ! -d $2 ]
 	exit 1
 fi
 
+# create the destination directory
+mkdir "$3"
+
 # output the files in the first group - these will all be copied
 echo "These files from $1 copied into $3:"
 ls -A "$1"
 echo
+
+# copy all files from the first directory to the empty destination, maintaining file attributes
+cp -p $1/* "$3"
 
 # output the files that only exist in the second group
 echo "These new file(s) from $2 copied into $3:"
@@ -24,8 +30,8 @@ echo "These new file(s) from $2 copied into $3:"
 # loop through all files in dir2
 for file in $(ls -1 $2)
 do
-	# make sure the file does not also exist in dir1
-	if [ ! -f $1/$file ]
+	# make sure the file does not already exist in dir3
+	if [ ! -f $3/$file ]
 	then
 		# if so, output the filename only
 		echo $file
@@ -41,19 +47,13 @@ echo "These file(s) from $2 copied into $3 and overwrite(s) their namesakes in $
 # loop through all files in dir2
 for file in $(ls -1 $2)
 do
-	# if the file also exists in dir1, check whether the file in dir2 is newer
-	if [ -f $1/$file ] && [ $2/$file -nt $1/$file ]
+	# if the file already exists in dir3, check whether the file in dir2 is newer
+	if [ -f $3/$file ] && [ $2/$file -nt $3/$file ]
 		then
 		# if so, output the filename only
 		echo $file
 	fi
 done
-
-# create the destination directory
-mkdir "$3"
-
-# copy all files from the first directory to the empty destination, maintaining file attributes
-cp -p $1/* "$3"
 
 # copy all files from the second directory to the destination, maintainign file atrributes
 # and only overwriting files if the source file is newer than the destination
